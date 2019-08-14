@@ -1,0 +1,85 @@
+
+We can expect "language team" to include computational and phonetic
+skills, but not specifically speech tech skills.
+
+Adapting the transcriber to the language is a one-time task performed
+by the language team, not by ultimate end user.
+
+Epitran consists of preprocessing rules Pre, mapping rules M, and
+postprocessing rules Post.
+
+We can expect the language team to write Pre.
+
+We can provide a generic set of M, constructed from the tables that
+Antonis has.
+
+Let's put Post aside for now.
+
+We also assume that the language team compiles a wordlist V.
+Define V' = Pre(V).
+
+A mapping rule example: chs -> ks (German).
+ - epitran-master/epitran/data/map/deu-Latn-np.csv
+
+Let G be the grapheme sequence, P is the "canonical pronunciation"
+phonetic sequence.  A is the output of AM.
+
+A bead is one of:
+ - a mapping element M, taking sequence to sequence: G -> P
+   plus replacements R: p -> f
+ - an insertion 0 -> f
+ - a deletion g -> 0
+
+Transition costs from bead to bead: LM.
+
+Use V' to produce the LM.
+
+Bead is state.  Emission cost is cost of M + costs of R's.
+
+Parameters:
+ - Pre - provided by language team
+ - M - generic one provided, may be edited by language team
+ - I - insertions
+ - D - deletions
+ - R - replacements
+ - LM
+ - V - vocabulary, used to generate LM
+
+Estimating R - either use Antonis's table or using phonetic features.
+
+
+
+---------
+
+we also include G deletion beads for cases where the AM failed to
+detect a brief phone
+
+epenthesis beads should be less expensive when the phon is short. can
+we get durations?
+
+mapping cost: a priori prob of having target, given graph. initially
+0, perhaps
+
+get replacement cost by phon similarity. there are 180 phons, we can
+examine them
+
+just fix the deletion cost
+
+relate insertion cost to phon duration.  draw up the cost table
+manually
+
+example.  
+i-i-E sh-S-s, o-o-oo 0-@ r-0
+
+let word list be given. guessing at spelling is a different task
+
+include a space deletion bead. it has no cost, its only purpose is to
+make bead seq determine a unique word seq.
+
+hard constraint: W consists of words in the wordlist
+
+prediction: given P, find best bead sequence, read off W
+
+alignment: given P, G, find best bead sequence
+
+
